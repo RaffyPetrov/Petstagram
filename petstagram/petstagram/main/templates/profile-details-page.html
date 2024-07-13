@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block base_content %}
+
+    <!-- Start Profile Details Section -->
+    <div class="profile">
+
+        <!-- Start Profile Personal Data Section -->
+        <div class="profile-data">
+            <div class="profile_img">
+                <div class="image">
+
+
+                    {% if not profile.profile_picture %}
+                        <img src="{% static 'images/person.png' %}" alt="Default picture">
+                    {% else %}
+                        <img src="{{ profile.profile_picture }}" alt="Profile picture">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="personal">
+                <div class="edit">
+                    <p>{{ profile.username }}</p>
+
+
+                    {% if is_owner %}
+
+                        <a href="{% url 'profile edit' pk=object.pk %}">
+                            <img class="edit-img" src="{% static 'images/edit-pen-icon-6.jpg' %}" alt="edit button">
+                        </a>
+
+
+                        <a href="{% url 'profile delete' pk=object.pk %}">
+                            <img class="bin-img" src="{% static 'images/icon-remove-22.jpg' %}" alt="bin button">
+                        </a>
+                    {% endif %}
+
+
+                </div>
+                <div class="data">
+
+                    <span>{{ photos_count }}</span>
+                    <p>photos</p>
+
+                    <span>{{ pets_count }}</span>
+                    <p>pets</p>
+
+                    <span>{{ likes_count }}</span>
+                    <p>likes</p>
+                </div>
+                {% if profile.full_name %}
+                    <h3 class="names">{{ profile.full_name }}</h3>
+                {% endif %}
+                <!-- User Email Address -->
+                <p class="email">{{ profile.email }}</p>
+
+                {% if profile.gender %}
+                    <p class="gender">{{ profile.gender }}</p>
+                {% endif %}
+            </div>
+        </div>
+        <!-- End Profile Personal Data Section -->
+
+        <!-- Start Pets Data Section -->
+        <div class="pets">
+            <div class="statuses">
+                {% for pet in pets %}
+                    <a href="{% url 'pet details' username=profile.username pet_slug=pet.slug %}">
+                        <div class="head-pet">
+                            <div class="status">
+                                <div class="image">
+                                    <!-- Pet Image -->
+                                    <img src="{{ pet.personal_photo }}"
+                                         alt="pet img">
+                                </div>
+                            </div>
+                            <p>{{ pet.name }}</p>
+                        </div>
+                    </a>
+
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="pet-photos">
+            {% for photo in photos %}
+                <a href="{% url 'photo details' pk=photo.pk %}">
+
+                    <img src="{{ photo.photo.url }}"
+                         alt="pet img">
+                </a>
+            {% endfor %}
+
+        </div>
+
+
+{% endblock %}
