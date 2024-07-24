@@ -1,9 +1,10 @@
 from datetime import datetime
+from django.contrib.auth.models import User
 
 from django.db import models
 from django.core.validators import MinLengthValidator
 
-from petstagram.main.validators import only_letters_validator
+from petstagram.main.validators import only_letters_validator, MinDateValidator, MaxDateValidator
 
 
 # Create your models here.
@@ -83,6 +84,8 @@ class Pet(models.Model):
 
     TYPES = [(x, x) for x in (CAT, DOG, BUNNY, PARROT, FISH, OTHER)]
     NAME_MAX_LENGTH = 30
+
+    # MIN_DATE = datetime.date(1920, 1, 1)
 
     # Fields(Columns)
     name = models.CharField(

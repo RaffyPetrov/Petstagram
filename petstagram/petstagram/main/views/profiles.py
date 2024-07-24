@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 
-from petstagram.main.admin import Pet
-from petstagram.main.forms import ProfileForm , EditProfileForm , DeleteProfileForm
-
+from petstagram.main.forms import EditProfileForm, DeleteProfileForm, ProfileForm
 from petstagram.main.helpers import get_profile
+
 from petstagram.main.models import PetPhoto, Pet, Profile
 
 
@@ -20,6 +19,7 @@ def show_profile(request):
         'profile': profile,
         'total_likes_count': total_likes_count,
         'total_pet_photos_count': total_pet_photos_count,
+        'pets': pets,
     }
     return render(request, 'profile_details.html', context)
 
@@ -50,29 +50,3 @@ def edit_profile(request):
 
 def delete_profile(request):
     return profile_action(request, DeleteProfileForm, 'index', get_profile(), 'profile_delete.html')
-
-
-
-
-
-
-
-
-# def edit_profile(request):
-#     profile = get_profile()
-#     if request.method == 'POST':
-#         form = EditProfileForm(request.POST, instance=profile)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('profile')
-#     else:
-#         form = EditProfileForm(instance=profile)
-#
-#     context = {
-#         'form': form,
-#     }
-#
-#     return render(request, 'profile_edit.html', context)
-
-
-
