@@ -5,9 +5,9 @@ def photo_add_page(request):
     return render(request, 'templates/photos/photo-add-page.html')
 
 
-def photo_edit_page(request):
+def photo_edit_page(request, pk: int):
     return render(request, 'templates/photos/photo-edit-page.html')
 
 
-def photo_details_page(request):
+def photo_details_page(request, pk: int):
     return render(request, 'templates/photos/photo-details-page.html')

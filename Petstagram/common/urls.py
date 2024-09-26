@@ -1,9 +1,7 @@
-from django.urls import path, include
+from django.urls import path
 
-from Petstagram.accounts import views
+from Petstagram.common.views import home_page
 
 urlpatterns = (
-    # path('', views.home_page, name='home page'),
+    path('', home_page, name='home page'),
 )
-
-
