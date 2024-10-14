@@ -1,21 +1,24 @@
 {% extends 'templates/common/base.html' %}
 {% load static %}
 {% block content %}
-    
 
 
-    <div class="container">
+
+     <div class="container">
         <div class="col-9">
 
             <!-- Start Searchbar Form -->
-            <form class="searchbar" method="post">
-                <input type="text" placeholder="Search by pet name...">
+            <form class="searchbar">
+                {{ search_form }}
                 <button>
-                    <img src="/static/images/search.png" height="18" alt="img2">
+                    <img src="{% static '/images/search.png' %}" height="18" alt="img2">
                 </button>
             </form>
             <!-- End Searchbar Form -->
-            {% include 'templates/common/pet-posts.html' %}
+            {% for photo in all_photos %}
+                {% include 'templates/common/pet-posts.html' %}
+            {% endfor %}
+            
 
         </div>
     </div>
