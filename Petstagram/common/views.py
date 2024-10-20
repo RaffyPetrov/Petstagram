@@ -1,27 +1,33 @@
-from django.shortcuts import render, redirect, resolve_url
+from django.shortcuts import redirect, resolve_url
+from django.views.generic import ListView
 from pyperclip import copy
-
-from Petstagram.common.forms import CommentForm , SearchForm
+from Petstagram.common.forms import CommentForm, SearchForm
 from Petstagram.common.models import Like
 from Petstagram.photos.models import Photo
 
 
-def home_page(request):
-    all_photos = Photo.objects.all()
-    comment_form = CommentForm()
-    search_form = SearchForm(request.GET)
+class HomePageView(ListView):
+    model = Photo
+    template_name = 'templates/common/home-page.html'
+    context_object_name = 'all_photos'  # by default is object_list and photos
+    paginate_by = 1
 
-    if search_form.is_valid():
-        all_photos = all_photos.filter(
-            tagged_pets__name__icontains=search_form.cleaned_data['pet_name']
-        )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
-    context = {
-        'all_photos': all_photos,
-        'comment_form': comment_form,
-        'search_form': search_form,
-    }
-    return render(request, 'templates/common/home-page.html', context)
+        context['comment_form'] = CommentForm()
+        context['search_form'] = SearchForm(self.request.GET)
+
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()  # ALl objects
+        pet_name = self.request.GET.get('pet_name')
+        if pet_name:
+            queryset = queryset.filter(  # Filter the objects
+                tagged_pets__name__icontains=pet_name
+            )
+        return queryset  # return the new queryset
 
 
 def likes_functionality(request, photo_id: int):
@@ -40,7 +46,6 @@ def likes_functionality(request, photo_id: int):
 
 def share_functionality(request, photo_id: int):
     copy(request.META.get('HTTP_HOST') + resolve_url('photo-details', photo_id))
-                        # HTTP_HOST = http://127.0.0.1
 
     return redirect(request.META.get('HTTP_REFERER') + f'#{photo_id}')
 
