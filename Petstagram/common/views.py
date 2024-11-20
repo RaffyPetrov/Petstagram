@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, resolve_url
 from django.views.generic import ListView
 from pyperclip import copy
@@ -18,6 +19,11 @@ class HomePageView(ListView):
         context['comment_form'] = CommentForm()
         context['search_form'] = SearchForm(self.request.GET)
 
+        user = self.request.user
+
+        for photo in context['all_photos']:
+            photo.has_liked = photo.like_set.filter(user=user).exists() if user.is_authenticated else False
+
         return context
 
     def get_queryset(self):
@@ -30,15 +36,17 @@ class HomePageView(ListView):
         return queryset  # return the new queryset
 
 
+@login_required
 def likes_functionality(request, photo_id: int):
     liked_object = Like.objects.filter(
-        to_photo_id=photo_id
+        to_photo_id=photo_id,
+        user=request.user
     ).first()
 
     if liked_object:
         liked_object.delete()
     else:
-        like = Like(to_photo_id=photo_id)
+        like = Like(to_photo_id=photo_id, user=request.user)
         like.save()
 
     return redirect(request.META.get('HTTP_REFERER') + f'#{photo_id}')
@@ -50,6 +58,7 @@ def share_functionality(request, photo_id: int):
     return redirect(request.META.get('HTTP_REFERER') + f'#{photo_id}')
 
 
+@login_required
 def comment_functionality(request, photo_id: int):
     if request.POST:
         photo = Photo.objects.get(pk=photo_id)
@@ -58,6 +67,7 @@ def comment_functionality(request, photo_id: int):
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
             comment.to_photo = photo
+            comment.user = request.user
             comment.save()
 
         return redirect(request.META.get('HTTP_REFERER') + f'#{photo_id}')

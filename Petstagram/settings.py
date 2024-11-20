@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +27,15 @@ SECRET_KEY = 'django-insecure-ck2!#1rgvw*-+%dm9*ad$p6qj9u9ku%cllf&a5_t!bon3o8=nb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "https://healthy-mastiff-known.ngrok-free.app"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://healthy-mastiff-known.ngrok-free.app"
+]
 
 
 # Application definition
@@ -138,3 +148,6 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'accounts.AppUser'
+LOGIN_REDIRECT_URL = reverse_lazy('home page')
+LOGOUT_REDIRECT_URL = reverse_lazy('login')
